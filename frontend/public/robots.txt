@@ -1,0 +1,35 @@
+# robots.txt for AeroML
+# COMPLETE SEO CONFIGURATION
+
+# Allow all crawlers to index the site
+User-agent: *
+Allow: /
+
+# ─── DISALLOW PRIVATE PAGES ─────────────────────────────────────────────
+
+# Authentication pages - no need to index
+Disallow: /auth/login
+Disallow: /auth/signup
+Disallow: /auth/forgot-password
+Disallow: /auth/reset-password
+Disallow: /auth/verify-email
+Disallow: /auth/verify-notice
+
+# User dashboard - private
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /workbench
+Disallow: /saved-projects
+Disallow: /tasks
+
+# API endpoints - private
+Disallow: /api/
+Disallow: /_next/
+
+# ─── SITEMAP ─────────────────────────────────────────────────────────────
+
+Sitemap: https://aeroml.com/sitemap.xml
+
+# ─── CRAWL DELAY ────────────────────────────────────────────────────────
+
+Crawl-delay: 10

@@ -1,0 +1,28 @@
+{
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "pip install -r requirements.txt"
+  },
+  "deploy": {
+    "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port 8000",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 300,
+    "restartPolicyType": "ON_FAILURE"
+  },
+  "env": {
+    "POSTGRES_USER": { "required": true },
+    "POSTGRES_PASSWORD": { "required": true },
+    "POSTGRES_DB": { "required": true },
+    "POSTGRES_HOST": { "value": "${{postgres.host}}" },
+    "SECRET_KEY": { "required": true, "generator": "secret" },
+    "RESEND_API_KEY": { "required": true },
+    "LEMON_SQUEEZY_API_KEY": { "required": true },
+    "LEMON_SQUEEZY_STORE_ID": { "required": true },
+    "LEMON_SQUEEZY_WEBHOOK_SECRET": { "required": true },
+    "LEMON_SQUEEZY_VARIANT_ID": { "required": true },
+    "LEMON_SQUEEZY_PRODUCT_ID": { "required": true },
+    "ADMIN_PASSWORD": { "required": true, "generator": "secret" },
+    "FRONTEND_URL": { "required": true },
+    "REDIS_URL": { "required": false }
+  }
+}

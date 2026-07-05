@@ -1,0 +1,403 @@
+/* frontend/src/app/auth/auth.module.css - Complete Fix */
+
+/* ─── ROOT VARIABLES ────────────────────────────────────────────── */
+:root {
+  --bg-deep: #0b1116;
+  --bg-matte: #0f1720;
+  --bg-card: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --accent-cyan: #00f2ff;
+  --accent-blue: #38bdf8;
+  --accent-purple: #a855f7;
+  --accent-green: #34d399;
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #4b5563;
+  --shadow-glow: 0 0 40px rgba(0, 242, 255, 0.05);
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── PAGE WRAPPER ────────────────────────────────────────────── */
+.pageWrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(800px 400px at 10% 8%, rgba(56, 189, 248, 0.03), transparent 60%),
+              linear-gradient(180deg, #080d14, #0b1116);
+  overflow: hidden;
+}
+
+/* ─── GLASS CARD ────────────────────────────────────────────────── */
+.glassCard {
+  width: 100%;
+  max-width: 440px;
+  background: rgba(18, 18, 24, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), var(--shadow-glow);
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+  position: relative;
+}
+
+/* Top accent line */
+.glassCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-blue), transparent);
+  border-radius: 0 0 4px 4px;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── HEADER ───────────────────────────────────────────────────── */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+/* ─── FORM ELEMENTS ────────────────────────────────────────────── */
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.input:focus {
+  border-color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.05);
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.08);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── SUBMIT BUTTON ────────────────────────────────────────────── */
+.submitButton {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%);
+  color: #000;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 0.5rem;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 242, 255, 0.35);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ─── FOOTER LINKS ─────────────────────────────────────────────── */
+.footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.link {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.link:hover {
+  color: var(--accent-blue);
+  text-decoration: underline;
+}
+
+/* ─── PLAN SELECTION CARDS ─────────────────────────────────────── */
+.planGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.planCard {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-family: inherit;
+  position: relative;
+}
+
+.planCard:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.planCardSelected {
+  border-color: var(--accent-cyan) !important;
+  background: rgba(0, 242, 255, 0.06) !important;
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.05);
+}
+
+.planCardSelected::after {
+  content: '✓';
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  color: var(--accent-cyan);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.planName {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  display: block;
+}
+
+.planPrice {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-green);
+  display: block;
+  margin-top: 2px;
+}
+
+.planDesc {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  display: block;
+}
+
+/* ─── FEATURES COMPARISON ──────────────────────────────────────── */
+.featureTable {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 1.25rem;
+}
+
+.featureRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.featureRow span:first-child {
+  color: var(--text-secondary);
+}
+
+.featureRow .check {
+  color: var(--accent-green);
+}
+
+.featureRow .x {
+  color: var(--text-muted);
+}
+
+/* ─── ERROR / SUCCESS MESSAGES ────────────────────────────────── */
+.errorBox {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.successBox {
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.15);
+  color: var(--accent-green);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── FORGOT PASSWORD LINK ────────────────────────────────────── */
+.forgotLink {
+  display: block;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-top: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.forgotLink:hover {
+  color: var(--accent-cyan);
+}
+
+/* ─── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .glassCard {
+    padding: 2rem 1.5rem;
+    margin: 0 1rem;
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .planGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .submitButton {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+}
+/* ─── PLAN TOGGLE BUTTONS ────────────────────────────────────── */
+.planToggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.planBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-family: inherit;
+  width: 100%;
+}
+
+.planBtn:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.planBtnActive {
+  border-color: #00f2ff !important;
+  background: rgba(0, 242, 255, 0.06) !important;
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.05);
+}
+
+.planBtnIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.planBtnName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.planBtnPrice {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #34d399;
+}
+
+.planBtnDesc {
+  font-size: 0.65rem;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+/* ─── COMPACT FORM ────────────────────────────────────────────── */
+.compactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.compactForm .formGroup {
+  margin-bottom: 0;
+}

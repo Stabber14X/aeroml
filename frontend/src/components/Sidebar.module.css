@@ -1,0 +1,383 @@
+/* frontend/src/components/Sidebar.module.css */
+:root {
+  --accent-cyan: #38bdf8;
+  --accent-purple: #a855f7;
+  --text-primary: #ffffff;
+  --text-secondary: #9aa8b2;
+  --bg-dark: #0b1116;
+  --glass-border: rgba(255,255,255,0.06);
+  --bg-matte: #0f1720;
+  --status-ok: #34d399;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  padding: 0;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(11, 17, 22, 0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--glass-border);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+}
+
+/* ─── HEADER / BRANDING ───────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px 16px 20px;
+  border-bottom: 1px solid var(--glass-border);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.logoIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+}
+
+.logoText {
+  font-size: 1.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  letter-spacing: -0.5px;
+}
+
+.logoBadge {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.04);
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  margin-left: 4px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.toggleButton {
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggleButton:hover {
+  background: rgba(56,189,248,0.08);
+  color: var(--accent-cyan);
+  border-color: rgba(56,189,248,0.15);
+}
+
+/* ─── NAVIGATION LINKS ────────────────────────────────────────── */
+.navLinksScroll {
+  flex: 1;
+  padding: 12px 10px 12px 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.navLinksScroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.navLinksScroll::-webkit-scrollbar-thumb {
+  background: rgba(56,189,248,0.2);
+  border-radius: 2px;
+}
+
+.navLinksScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  margin: 2px 0;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  position: relative;
+  gap: 12px;
+}
+
+.navLink > svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.04);
+}
+
+.navLink:hover > svg {
+  transform: scale(1.05);
+}
+
+.linkText {
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.active {
+  color: var(--accent-cyan) !important;
+  font-weight: 600;
+  background: rgba(56,189,248,0.06) !important;
+}
+
+.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: var(--accent-cyan);
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 12px rgba(56,189,248,0.2);
+}
+
+/* ─── TOOLTIP (Collapsed state) ───────────────────────────────── */
+.tooltip {
+  visibility: hidden;
+  background: var(--bg-matte);
+  color: var(--text-primary);
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 12px;
+  position: absolute;
+  z-index: 100;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--glass-border);
+  white-space: nowrap;
+}
+
+.sidebar:not([style*="width: 240px"]) .navLink:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(-50%) translateX(4px);
+}
+
+/* ─── SECTION DIVIDER ─────────────────────────────────────────── */
+.navDivider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 8px 14px;
+}
+
+/* ─── FOOTER ───────────────────────────────────────────────────── */
+.footer {
+  padding: 16px 20px 20px 20px;
+  border-top: 1px solid var(--glass-border);
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.userName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.userStatus {
+  font-size: 0.65rem;
+  color: var(--status-ok);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.userStatus::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--status-ok);
+  display: inline-block;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.02);
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.logoutButton:hover {
+  background: rgba(239, 68, 68, 0.06);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+.logoutButton svg {
+  flex-shrink: 0;
+}
+
+/* ─── COLLAPSED STATE OVERRIDES ──────────────────────────────── */
+.sidebar:not([style*="width: 240px"]) .logoBadge,
+.sidebar:not([style*="width: 240px"]) .userDetails,
+.sidebar:not([style*="width: 240px"]) .logoutButton span:not(.tooltip) {
+  display: none;
+}
+
+.sidebar:not([style*="width: 240px"]) .logoIcon {
+  display: none;
+}
+
+.sidebar:not([style*="width: 240px"]) .header {
+  padding: 16px 12px 16px 16px;
+}
+
+.sidebar:not([style*="width: 240px"]) .branding {
+  gap: 0;
+}
+
+.sidebar:not([style*="width: 240px"]) .logoText {
+  opacity: 0;
+  width: 0;
+}
+
+.sidebar:not([style*="width: 240px"]) .userInfo {
+  padding: 6px 0;
+}
+
+.sidebar:not([style*="width: 240px"]) .logoutButton {
+  padding: 10px;
+}
+
+.sidebar:not([style*="width: 240px"]) .navLink {
+  justify-content: center;
+  padding: 10px 12px;
+}
+
+.sidebar:not([style*="width: 240px"]) .navLink .linkText {
+  opacity: 0;
+  width: 0;
+}
+
+.sidebar:not([style*="width: 240px"]) .navLink .tooltip {
+  /* Show tooltip on hover in collapsed state */
+}
+
+.sidebar:not([style*="width: 240px"]) .logoutButton .tooltip {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar:not([style*="width: 240px"]) .logoutButton:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px !important;
+  }
+  
+  .sidebar:not([style*="width: 200px"]) {
+    width: 56px !important;
+  }
+}

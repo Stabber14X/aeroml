@@ -1,0 +1,44 @@
+# Python virtual environment
+venv/
+env/
+.venv/
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Node modules
+node_modules/
+.next/
+out/
+dist/
+.npm/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+
+# Railway / Vercel
+.vercel
+.railway
+
+# Temporary files
+*.tmp
+*.temp
+*.bak

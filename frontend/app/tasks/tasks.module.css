@@ -1,0 +1,177 @@
+/* frontend/src/app/tasks/tasks.module.css (New Professional Design) */
+
+/* Inherited/Standardized Variables for Consistency */
+:global(:root) {
+    --bg: #061018;
+    --card: rgba(12,18,24,0.92);
+    --glass: rgba(255,255,255,0.03);
+    --accent: #ff7a00; /* Orange - Primary action color */
+    --accent-2: #00ffc2; /* Cyan - Metric highlight color */
+    --muted: #9ca3af;
+    --primary-blue: #007aff; /* Status color for Progress */
+    --status-success: #34d399; /* Green */
+    --status-failure: #f87171; /* Red */
+    --text-primary: #e8f0f8;
+    --text-secondary: var(--muted);
+    --radius: 10px;
+    --shadow-strong: 0 10px 20px rgba(2,6,12,0.4);
+}
+
+.taskGrid {
+    display: grid;
+    /* Uniform width, slightly larger min-width for professionalism */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.taskCard {
+    background: var(--card); 
+    border: 1px solid var(--glass); 
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow-strong);
+    /* Removed fixed height, using flex to manage space */
+    display: flex;
+    flex-direction: column;
+    min-height: 250px; 
+    transition: all 0.2s ease;
+}
+
+.taskCard:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-blue);
+}
+
+/* --- TOP SECTION: TITLE & ID --- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.taskType {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.taskId {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-family: 'Consolas', monospace;
+    opacity: 0.6;
+}
+
+/* --- MIDDLE SECTION: STATUS & PROGRESS --- */
+.progressInfo {
+    flex-grow: 1; /* Pushes the action row to the bottom */
+}
+
+.baseDesign {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+.baseDesign span {
+    color: var(--accent); /* Highlight the base airfoil name */
+    font-weight: 600;
+}
+
+.statusLabel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.progressBarContainer {
+    width: 100%;
+    height: 8px; /* Slightly thicker bar */
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+.progressBar {
+    /* Style applied via inline style for dynamic width/color */
+    height: 100%;
+    border-radius: 4px; 
+}
+
+.progressMessage {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    min-height: 1.3rem; /* Space reservation */
+}
+
+/* --- BOTTOM SECTION: METRIC & ACTION --- */
+.actionRow {
+    margin-top: auto; 
+    padding-top: 15px;
+    border-top: 1px solid var(--glass);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resultMetric {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.resultMetric span {
+    color: var(--accent-2); /* Cyan highlight for final value */
+    font-weight: 700;
+    margin-left: 5px;
+}
+
+.restoreButton {
+    background: var(--accent); /* Use orange for primary action button */
+    color: var(--bg);
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(255, 122, 0, 0.3);
+}
+
+.restoreButton:hover {
+    background: #ff9c3a;
+    transform: translateY(-1px);
+}
+
+/* --- UTILITY & STATUS TEXTS --- */
+.statusLoading, .statusEmpty {
+    grid-column: 1 / -1; 
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.statusLoading {
+    color: var(--accent-2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .taskCard {
+        min-height: 200px;
+    }
+    .taskGrid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}

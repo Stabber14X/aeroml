@@ -1,0 +1,261 @@
+/* File: frontend/src/app/content.module.css */
+
+/* --- 1. GLOBAL PAGE LAYOUT --- */
+.pageContainer {
+  min-height: 100vh;
+  width: 100%;
+  /* Deep Aerospace Dark with a subtle grid overlay */
+  background-color: #030407;
+  background-image: 
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: #e2e8f0;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Ambient glow in the top center */
+.pageContainer::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(56,189,248,0.15) 0%, rgba(3,4,7,0) 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* --- 2. GLASS NAVBAR --- */
+.navbar {
+  position: sticky;
+  top: 20px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  border-radius: 100px;
+  background: rgba(10, 15, 25, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.navLogo {
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+  background: linear-gradient(90deg, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  background-clip: text; /* Added to fix warning */
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- 3. HERO SECTION --- */
+.heroSection {
+  text-align: center;
+  padding: 80px 20px 60px;
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  background-clip: text; /* Added to fix warning */
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 40px rgba(56,189,248,0.2);
+}
+
+.heroSubtitle {
+  font-size: 1.15rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* --- 4. HUD CARDS (The main content containers) --- */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto 80px;
+  padding: 0 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.hudCard {
+  grid-column: span 12;
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.6));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(56, 189, 248, 0.2); /* Cyan highlight top */
+  border-radius: 16px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+}
+
+.hudCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(56,189,248,0.1);
+  border-top-color: rgba(56, 189, 248, 0.5);
+}
+
+/* Decorative corner lines for that "Tech" feel */
+.hudCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  border-top: 2px solid rgba(56,189,248,0.4);
+  border-right: 2px solid rgba(56,189,248,0.4);
+  border-top-right-radius: 16px;
+}
+
+.halfCard { grid-column: span 6; }
+.thirdCard { grid-column: span 4; }
+
+@media (max-width: 900px) {
+  .halfCard, .thirdCard { grid-column: span 12; }
+  .heroTitle { font-size: 2.5rem; }
+}
+
+/* --- 5. TYPOGRAPHY INSIDE CARDS --- */
+.sectionTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #38bdf8; /* Accent Cyan */
+  margin-bottom: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionTitle::after {
+  content: '';
+  height: 1px;
+  flex-grow: 1;
+  background: linear-gradient(90deg, rgba(56,189,248,0.3), transparent);
+}
+
+.cardHeading {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 20px;
+}
+
+.text {
+  color: #cbd5e1;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  margin-bottom: 24px;
+}
+
+/* --- 6. LISTS & DATA --- */
+.techList {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.techItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  border-left: 3px solid #38bdf8;
+  font-size: 0.95rem;
+}
+
+.metricGrid {
+  display: flex;
+  gap: 40px;
+  margin-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 24px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricLabel {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* --- 7. BUTTONS --- */
+.primaryBtn, .secondaryBtn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.primaryBtn {
+  background: #38bdf8;
+  color: #020617;
+  border: 1px solid #38bdf8;
+}
+
+.primaryBtn:hover {
+  background: #0ea5e9;
+  box-shadow: 0 0 20px rgba(56,189,248,0.4);
+}
+
+.secondaryBtn {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid rgba(148,163,184,0.3);
+}
+
+.secondaryBtn:hover {
+  border-color: #fff;
+  color: #fff;
+}

@@ -1,0 +1,36 @@
+:root {
+  /* Core Dark/Matte Palette */
+  --bg-deep: #06060c; 
+  --bg-matte: #0e0e16; 
+  --bg-surface: #1e1e2d; 
+
+  /* VISUALIZATION COLORS */
+  --primary-color: #007AFF; /* Aerospace Blue */
+  --accent-cyan: #00f2ff; 
+  
+  /* ... rest of your existing variables ... */
+  --text-primary: #f0f0f5;
+  --text-secondary: #a3b3c8;
+  --status-ok: #34d399;
+  --status-warning: #fcd34d;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Global simple fade-in for stable animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,155 @@
+
+/* File: frontend/src/components/Sidebar.module.css - Minimizable */
+
+.sidebar {
+    /* Fixed Positioning for Enterprise Feel */
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    padding: 25px 0;
+    
+    /* Transition for smooth collapse/expand */
+    transition: width 0.3s ease; 
+    
+    /* Deep Acrylic Base */
+    background: rgba(18, 18, 24, 0.95); 
+    backdrop-filter: blur(15px);
+    border-right: 1px solid var(--glass-border);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+/* --- HEADER / BRANDING --- */
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 0 20px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative; /* Needed for toggle button placement */
+}
+
+.toggleButton {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 5px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.toggleButton:hover {
+    opacity: 1;
+}
+
+.logoIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: var(--accent-cyan);
+    color: var(--bg-deep);
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Prevents icon from shrinking */
+}
+
+.logoText {
+    margin-left: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    /* CRITICAL: Use transition for smooth text fade */
+    transition: opacity 0.3s ease, margin-left 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* --- NAVIGATION LINKS --- */
+
+.navLinks {
+    flex-grow: 1;
+    padding: 20px 0;
+}
+
+.navLink {
+    display: block;
+    padding: 12px 20px;
+    margin: 5px 0;
+    text-decoration: none;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.navLink:hover {
+    color: var(--text-primary);
+    background-color: rgba(56, 189, 248, 0.05);
+}
+
+.active {
+    color: var(--accent-cyan) !important;
+    font-weight: 600;
+    border-left-color: var(--accent-cyan);
+    background: linear-gradient(90deg, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0) 100%);
+}
+
+/* --- FOOTER / USER STATUS --- */
+
+.footer {
+    padding: 15px 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    /* Use transition for smooth text fade */
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.userName {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.userStatus {
+    font-size: 0.75rem;
+    color: var(--status-ok);
+}
+
+.logoutButton {
+    padding: 10px;
+    background: var(--bg-matte);
+    color: var(--text-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0; /* Prevents button text from wrapping */
+}
+
+.logoutButton:hover {
+    background-color: #ff4d4d20;
+    color: #ff4d4d;
+}

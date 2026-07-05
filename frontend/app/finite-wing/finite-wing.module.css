@@ -1,0 +1,647 @@
+/* ============================================================
+   ROOT LAYOUT — mirrors workbench .workbenchContainer
+   ============================================================ */
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  background-color: #0b0f14;
+  color: #e2e8f0;
+  font-family: 'Consolas', 'Monaco', monospace;
+  overflow: hidden;
+  padding-left: 2rem;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   SCROLLBAR — identical to workbench
+   ============================================================ */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b0f14; }
+::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+/* ============================================================
+   LEFT CONTROL PANEL — mirrors workbench .controlsColumn
+   ============================================================ */
+.controlPanel {
+  width: 25%;
+  min-width: 220px;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 2rem 1.5rem 2rem 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+/* Panel header — workbench .title style */
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #fff;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.panelIcon {
+  color: #007AFF;
+  font-size: 1rem;
+}
+
+/* Pulsing activity dot */
+.loadingDot {
+  width: 7px;
+  height: 7px;
+  background: #007AFF;
+  border-radius: 50%;
+  margin-left: auto;
+  box-shadow: 0 0 8px #007AFF;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* Design name badge — workbench .consolePanel feel */
+.designNameBadge {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.designLabel {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #8b949e;
+  font-weight: 700;
+}
+
+.designName {
+  font-size: 0.85rem;
+  color: #00FFC2;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ============================================================
+   SECTIONS — workbench .consolePanel style
+   ============================================================ */
+.section {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.sectionTitle {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #8b949e;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+/* ============================================================
+   MINI GRID — 2D polar summary cards
+   ============================================================ */
+.miniGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+/* mirrors workbench .telemetryCard */
+.miniCard {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s;
+}
+
+.miniCard:hover { border-color: #4b5563; }
+
+.miniLabel {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8b949e;
+  margin-bottom: 0.3rem;
+  display: block;
+  font-weight: 600;
+}
+
+.miniVal {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* ============================================================
+   PARAM SLIDERS — matches workbench slider system exactly
+   ============================================================ */
+.paramRow {
+  margin-bottom: 0.75rem;
+}
+
+.paramLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.65rem;
+  color: #8b949e;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* workbench .sliderInput */
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: #30363d;
+  border-radius: 2px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.slider:hover { background: #484f58; }
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--slider-color, #007AFF);
+  cursor: pointer;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--slider-color, #007AFF) 50%, transparent);
+  transition: transform 0.1s;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+  background: #fff;
+}
+
+/* ============================================================
+   EXPORT / ACTION BUTTONS — workbench .cmdBtn / .primaryBtn
+   ============================================================ */
+.exportBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.8rem;
+  background: rgba(0, 122, 255, 0.1);
+  border: 1px solid #007AFF;
+  border-radius: 4px;
+  color: #007AFF;
+  font-family: 'Consolas', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exportBtn:hover:not(:disabled) {
+  background: #007AFF;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 122, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.exportBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   VIZ COLUMN — workbench .visualizationColumn
+   ============================================================ */
+.vizColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem;
+  height: 100vh;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ============================================================
+   TELEMETRY STRIP — workbench .telemetryGrid / .telemetryCard
+   ============================================================ */
+.telemetryStrip {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+}
+
+.telCard {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  transition: border-color 0.2s;
+}
+
+.telCard:hover { border-color: #4b5563; }
+
+.telIcon {
+  font-size: 0.75rem;
+  margin-bottom: 1px;
+}
+
+/* workbench .hudLabel */
+.telLabel {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8b949e;
+  margin-bottom: 0.2rem;
+  display: block;
+  font-weight: 600;
+}
+
+/* workbench .dataValue */
+.telVal {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #00FFC2;
+  letter-spacing: -0.5px;
+}
+
+/* ============================================================
+   TAB BAR — workbench .viewToggleGroup / .viewToggleBtn
+   ============================================================ */
+.tabBar {
+  display: flex;
+  gap: 2px;
+  background-color: rgba(13, 17, 23, 0.9);
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 4px;
+  margin-bottom: 0.75rem;
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+}
+
+.tabBtn {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-family: 'Consolas', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.tabBtn:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* workbench .viewToggleBtn.active */
+.tabActive {
+  background-color: #007AFF !important;
+  color: #fff !important;
+}
+
+/* ============================================================
+   MAIN VIZ AREA — workbench .canvasContainer
+   ============================================================ */
+.mainViz {
+  flex: 1 1 auto;
+  background-color: #010409;
+  border: 1px solid #444c56;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================================
+   PLANFORM TAB
+   ============================================================ */
+.planformLayout {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  gap: 0;
+}
+
+.canvasWrap {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+/* Side stats panel — workbench .consolePanel */
+.planformStats {
+  width: 200px;
+  min-width: 200px;
+  padding: 1rem 0.75rem;
+  border-left: 1px solid #30363d;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow-y: auto;
+  background-color: #0b0f14;
+}
+
+/* workbench .telemetryCard */
+.statCard {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s;
+  text-align: center;
+}
+
+.statCard:hover { border-color: #4b5563; }
+
+/* workbench .hudLabel */
+.statLabel {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8b949e;
+  margin-bottom: 0.4rem;
+  display: block;
+  font-weight: 600;
+}
+
+/* workbench .dataValue */
+.statVal {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #00FFC2;
+  letter-spacing: -0.5px;
+}
+
+/* ============================================================
+   CHART CONTAINER (shared by all chart tabs)
+   ============================================================ */
+.chartContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.75rem 1rem;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* workbench .title partial */
+.chartTitle {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #8b949e;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================================
+   ACOUSTICS META
+   ============================================================ */
+.acousticsMeta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* workbench .telemetryCard */
+.aMetaCard {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.65rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s;
+}
+
+.aMetaCard:hover { border-color: #4b5563; }
+
+.aMetaCard span:first-child {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8b949e;
+  font-weight: 600;
+}
+
+.aMetaCard span:last-child {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #00FFC2;
+  letter-spacing: -0.5px;
+}
+
+/* ============================================================
+   LOAD MAP
+   ============================================================ */
+.loadSummary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+  flex-shrink: 0;
+}
+
+/* workbench .telemetryCard */
+.loadCard {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s;
+}
+
+.loadCard:hover { border-color: #4b5563; }
+
+/* workbench .hudLabel */
+.loadLabel {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8b949e;
+  margin-bottom: 0.4rem;
+  display: block;
+  font-weight: 600;
+}
+
+/* workbench .dataValue */
+.loadVal {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #00FFC2;
+  letter-spacing: -0.5px;
+}
+
+/* ============================================================
+   MODALS — workbench .modalOverlay / .optimizationModal feel
+   ============================================================ */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.libModal {
+  background: #111827;
+  border: 1px solid #30363d;
+  width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+.libModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #30363d;
+}
+
+.libModalHeader h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.libModalHeader button {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.libModalHeader button:hover { color: #ef4444; }
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid #30363d;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.searchBox input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #00FFC2;
+  font-size: 0.9rem;
+  width: 100%;
+  margin-left: 10px;
+  font-family: 'Consolas', monospace;
+}
+
+.searchBox input::placeholder { color: #4b5563; }
+
+.libResults {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.libResultItem {
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  transition: background 0.2s;
+}
+
+.libResultItem:hover {
+  background: rgba(0, 122, 255, 0.08);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
