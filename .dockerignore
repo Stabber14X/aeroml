@@ -1,0 +1,13 @@
+﻿__pycache__
+*.pyc
+*.docx
+*.sql
+venv
+.venv
+.env
+.vscode
+.git
+*.log
+trained_models/*.pth
+trained_models/*.pt
+trained_models/*.npz
