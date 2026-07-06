@@ -123,7 +123,7 @@ function ImportPageContent() {
     }
 
     try {
-      const predictRes = await fetch(`${API_BASE_URL}/predict`, {
+      const predictRes = await fetch(`${API_BASE_URL}/predict/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

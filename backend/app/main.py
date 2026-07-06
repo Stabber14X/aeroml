@@ -96,6 +96,7 @@ app = FastAPI(
     description="Industrial Aerodynamics & Structural Analysis Engine",
     version="7.0.0",
     lifespan=lifespan,
+    redirect_slashes=False,  # CRITICAL FIX: Prevents 307 redirects on POST requests
 )
 
 # ─── MIDDLEWARE ORDER (CRITICAL) ─────────────────────────────────────────

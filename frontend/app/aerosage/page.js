@@ -80,7 +80,9 @@ function getToken() {
 }
 
 async function apiPost(endpoint, body) {
-  const res = await fetch(`${API}${endpoint}`, {
+  // Ensure endpoint has trailing slash for consistency
+  const normalizedEndpoint = endpoint.endsWith('/') ? endpoint : `${endpoint}/`;
+  const res = await fetch(`${API}${normalizedEndpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
     body: JSON.stringify(body)
@@ -93,7 +95,8 @@ async function apiPost(endpoint, body) {
 }
 
 async function apiGet(endpoint) {
-  const res = await fetch(`${API}${endpoint}`, {
+  const normalizedEndpoint = endpoint.endsWith('/') ? endpoint : `${endpoint}/`;
+  const res = await fetch(`${API}${normalizedEndpoint}`, {
     headers: { 'Authorization': `Bearer ${getToken()}` }
   });
   if (!res.ok) throw new Error(`API error ${res.status}`);
@@ -1772,7 +1775,7 @@ function AeroSAGEContent() {
       const sanitizedUpper = upper.map(v => Math.max(-0.1, Math.min(0.8, v)));
       const sanitizedLower = lower.map(v => Math.max(-0.8, Math.min(0.1, v)));
       
-      const data = await apiPost('/aerosage/generate/cst', {
+      const data = await apiPost('/aerosage/generate/cst/', {
         upper_coeffs: sanitizedUpper,
         lower_coeffs: sanitizedLower,
         n_points: 160,
@@ -1815,7 +1818,7 @@ function AeroSAGEContent() {
     }
     
     setLoadingImport(true);
-    fetch(`${API}/aerosage/import/coordinates`, {
+    fetch(`${API}/aerosage/import/coordinates/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
       body: JSON.stringify({
@@ -1851,7 +1854,7 @@ function AeroSAGEContent() {
   }, []);
 
   useEffect(() => {
-    apiGet('/aerosage/defect-types')
+    apiGet('/aerosage/defect-types/')
       .then(d => setDefectTypes(d.defect_types || []))
       .catch(() => setDefectTypes([
         { id: 'ice', label: 'Ice Accretion', color: '#60A5FA', icon: '❄' },
@@ -1881,7 +1884,7 @@ function AeroSAGEContent() {
     setLoadingImport(true);
     setError(null);
     try {
-      const data = await apiPost('/aerosage/generate/naca', { 
+      const data = await apiPost('/aerosage/generate/naca/', { 
         naca_code: code.trim(), 
         n_points: 160 
       });
@@ -1919,7 +1922,7 @@ function AeroSAGEContent() {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const res = await fetch(`${API}/aerosage/import/dat`, {
+      const res = await fetch(`${API}/aerosage/import/dat/`, {
         method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}` }, body: formData
       });
       if (!res.ok) throw new Error(res.statusText);
@@ -2026,7 +2029,7 @@ function AeroSAGEContent() {
     setMasterProgress({ step: 'Running Panel Method Analysis…', pct: 8 });
     let aResult = null;
     try {
-      aResult = await apiPost('/aerosage/analyze', {
+      aResult = await apiPost('/aerosage/analyze/', {
         coordinates: coords,
         conditions: { alpha_deg: alpha, reynolds, mach, n_crit: nCrit },
         defects, compute_clean_baseline: defects.length > 0, airfoil_name: airfoilName
@@ -2045,7 +2048,7 @@ function AeroSAGEContent() {
     setLoadingPolar(true);
     setMasterProgress({ step: 'Computing Polar Sweep…', pct: 42 });
     try {
-      const pResult = await apiPost('/aerosage/polar', {
+      const pResult = await apiPost('/aerosage/polar/', {
         coordinates: coords, reynolds, mach,
         alpha_start: polarAlphaStart, alpha_end: polarAlphaEnd, alpha_step: polarAlphaStep,
         defects, airfoil_name: airfoilName
@@ -2061,7 +2064,7 @@ function AeroSAGEContent() {
     setLoadingSens(true);
     setMasterProgress({ step: 'Computing Surface Sensitivity…', pct: 72 });
     try {
-      const sResult = await apiPost('/aerosage/sensitivity', {
+      const sResult = await apiPost('/aerosage/sensitivity/', {
         coordinates: coords,
         conditions: { alpha_deg: alpha, reynolds, mach, n_crit: nCrit },
         target: sensTarget, n_zones: sensNZones, perturbation_severity: 1.0
@@ -2085,7 +2088,7 @@ function AeroSAGEContent() {
     setLoadingAnalysis(true); setError(null);
     const t0 = Date.now();
     try {
-      const data = await apiPost('/aerosage/analyze', {
+      const data = await apiPost('/aerosage/analyze/', {
         coordinates: coords,
         conditions: { alpha_deg: alpha, reynolds, mach, n_crit: nCrit },
         defects, compute_clean_baseline: defects.length > 0, airfoil_name: airfoilName
@@ -2100,7 +2103,7 @@ function AeroSAGEContent() {
     if (!coords) return;
     setLoadingPolar(true); setError(null);
     try {
-      const data = await apiPost('/aerosage/polar', {
+      const data = await apiPost('/aerosage/polar/', {
         coordinates: coords, reynolds, mach,
         alpha_start: polarAlphaStart, alpha_end: polarAlphaEnd, alpha_step: polarAlphaStep,
         defects, airfoil_name: airfoilName
@@ -2114,7 +2117,7 @@ function AeroSAGEContent() {
     if (!coords) return;
     setLoadingSens(true); setError(null);
     try {
-      const data = await apiPost('/aerosage/sensitivity', {
+      const data = await apiPost('/aerosage/sensitivity/', {
         coordinates: coords,
         conditions: { alpha_deg: alpha, reynolds, mach, n_crit: nCrit },
         target: sensTarget, n_zones: sensNZones, perturbation_severity: 1.0

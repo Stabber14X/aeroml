@@ -315,17 +315,17 @@ function NeuralFlowContent() {
     };
     try {
       const [fieldRes, scalarRes] = await Promise.all([
-        fetch(`${API}/predict/field`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify(payload),
-        }),
-        fetch(`${API}/predict`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify(payload),
-        }),
-      ]);
+  fetch(`${API}/predict/field`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  }),
+  fetch(`${API}/predict/`, {  // <-- FIXED: added trailing slash
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  }),
+]);
       if (fieldRes.ok) setField(await fieldRes.json());
       if (scalarRes.ok) setScalar(await scalarRes.json());
     } catch (err) {
@@ -406,7 +406,7 @@ function NeuralFlowContent() {
     const results = [];
     for (const alpha of alphas) {
       try {
-        const res = await fetch(`${API}/predict`, {
+        const res = await fetch(`${API}/predict/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({ cst_coefficients: [...cst.a_upper, ...cst.a_lower], reynolds: conditions.reynolds, alpha, mach: conditions.mach, xtr_upper: cst.xtr_upper ?? 1.0, xtr_lower: cst.xtr_lower ?? 1.0 }),

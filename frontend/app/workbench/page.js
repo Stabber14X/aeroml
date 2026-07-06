@@ -444,7 +444,7 @@ function WorkbenchContent() {
                 mach: params.mach ?? 0.0, n_crit: params.n_crit ?? 9.0, xtr_upper: params.xtr_upper ?? 1.0, xtr_lower: params.xtr_lower ?? 1.0
             };
 
-            const predictUrl = `${API_BASE_URL}/predict?use_ensemble=${useEnsemble}`;
+            const predictUrl = `${API_BASE_URL}/predict/?use_ensemble=${useEnsemble}`;
 
             const [scalarRes, fieldRes] = await Promise.all([
                 fetch(predictUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(payload) }),

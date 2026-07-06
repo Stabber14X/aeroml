@@ -143,9 +143,10 @@ def enforce_physical_bounds(cl: float, cd: float, cm: float) -> tuple:
 
 
 # ============================================================================
-# SOVEREIGN INFERENCE ENDPOINT
+# SOVEREIGN INFERENCE ENDPOINT - WITH BOTH SLASH AND NO-SLASH SUPPORT
 # ============================================================================
 
+# --- MAIN ROUTE WITH TRAILING SLASH ---
 @router.post("/", response_model=SovereignOutput)
 async def predict_scalars(
     data: PredictionInput,
@@ -156,6 +157,28 @@ async def predict_scalars(
     Executes the Native PyTorch NeuralFoil engine with physics validation.
     Switches between Single-Core xxxlarge (Default) and 8-Model Bayesian Ensemble.
     Physics constraints are applied to all outputs for physical consistency.
+    """
+    return await _predict_scalars_impl(data, use_ensemble, user)
+
+
+# --- ROUTE WITHOUT TRAILING SLASH (Handles POST /predict) ---
+@router.post("", response_model=SovereignOutput)
+async def predict_scalars_no_slash(
+    data: PredictionInput,
+    use_ensemble: bool = Query(False, description="Use 8-model ensemble for higher accuracy"),
+    user=Depends(get_current_user)
+):
+    """
+    Same as predict_scalars but handles requests without trailing slash.
+    Prevents FastAPI from returning 307 redirect.
+    """
+    return await _predict_scalars_impl(data, use_ensemble, user)
+
+
+# --- SHARED IMPLEMENTATION ---
+async def _predict_scalars_impl(data: PredictionInput, use_ensemble: bool, user):
+    """
+    Core prediction implementation shared by both routes.
     """
     start_time = time.time()
     
@@ -531,7 +554,7 @@ async def health_check():
 
 
 # ============================================================================
-# BATCH PREDICTION ENDPOINT (for optimization)
+# BATCH PREDICTION ENDPOINT
 # ============================================================================
 
 @router.post("/batch")

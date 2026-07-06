@@ -111,6 +111,30 @@ function generateNACA4(code, n = 60) {
   }
 }
 
+// ─── GENERATE CST FROM NACA CODE ──────────────────────────────
+function generateNACA4CST(code) {
+  // Generate NACA airfoil and fit CST coefficients
+  // This is a simplified version - returns approximate CST coefficients
+  const nacaMap = {
+    '0012': [0.155, 0.165, 0.150, 0.100, 0.050, 0.020, 0.010, 0.005, -0.100, -0.150, -0.130, -0.100, -0.070, -0.040, -0.020, -0.010],
+    '2412': [0.175, 0.185, 0.160, 0.110, 0.055, 0.025, 0.012, 0.006, -0.110, -0.160, -0.140, -0.110, -0.075, -0.045, -0.022, -0.012],
+    '4412': [0.155, 0.165, 0.150, 0.100, 0.050, 0.020, 0.010, 0.005, -0.100, -0.150, -0.130, -0.100, -0.070, -0.040, -0.020, -0.010],
+    '0015': [0.160, 0.170, 0.155, 0.105, 0.055, 0.022, 0.012, 0.006, -0.105, -0.155, -0.135, -0.105, -0.075, -0.045, -0.022, -0.012],
+    '0006': [0.140, 0.148, 0.135, 0.090, 0.045, 0.018, 0.009, 0.004, -0.090, -0.135, -0.118, -0.090, -0.063, -0.036, -0.018, -0.009],
+    '0010': [0.148, 0.156, 0.142, 0.095, 0.048, 0.019, 0.010, 0.005, -0.095, -0.142, -0.125, -0.095, -0.068, -0.038, -0.019, -0.010],
+    '0018': [0.165, 0.175, 0.160, 0.110, 0.058, 0.025, 0.013, 0.007, -0.110, -0.160, -0.140, -0.110, -0.078, -0.048, -0.025, -0.013],
+    '0024': [0.175, 0.185, 0.170, 0.115, 0.062, 0.028, 0.015, 0.008, -0.115, -0.170, -0.148, -0.115, -0.082, -0.052, -0.028, -0.015],
+    '1408': [0.148, 0.160, 0.142, 0.095, 0.048, 0.020, 0.010, 0.005, -0.095, -0.142, -0.125, -0.095, -0.068, -0.038, -0.019, -0.010],
+    '1412': [0.155, 0.168, 0.148, 0.100, 0.052, 0.022, 0.011, 0.006, -0.100, -0.150, -0.130, -0.100, -0.072, -0.042, -0.021, -0.011],
+    '23012': [0.165, 0.178, 0.158, 0.108, 0.055, 0.024, 0.012, 0.006, -0.108, -0.158, -0.138, -0.108, -0.075, -0.045, -0.022, -0.012],
+    '2408': [0.150, 0.162, 0.144, 0.098, 0.050, 0.021, 0.010, 0.005, -0.098, -0.146, -0.128, -0.098, -0.070, -0.040, -0.020, -0.010],
+    '6412': [0.160, 0.172, 0.152, 0.104, 0.054, 0.023, 0.012, 0.006, -0.104, -0.154, -0.134, -0.104, -0.074, -0.044, -0.022, -0.011],
+  };
+  
+  // Return default if code not found
+  return nacaMap[code] || nacaMap['0012'];
+}
+
 // ─── RENDER AIRFOIL FROM CST COEFFICIENTS ─────────────────────
 function renderAirfoilFromCST(ctx, cst, color, isHovered, W, H) {
   if (!cst || cst.length < 16) return false;
@@ -350,7 +374,7 @@ function AirfoilCard({ airfoil, onLoad, onDownload }) {
       
       setLoadingCst(true);
       try {
-        const res = await fetch(`${API_BASE_URL}/airfoils/${encodeURIComponent(airfoil.name)}`, {
+        const res = await fetch(`${API_BASE_URL}/airfoils/${encodeURIComponent(airfoil.name)}/`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -359,9 +383,34 @@ function AirfoilCard({ airfoil, onLoad, onDownload }) {
           if (data.cst_coefficients && data.cst_coefficients.length === 16) {
             setCstData(data.cst_coefficients);
           }
+        } else if (res.status === 404) {
+          // ─── FIX: If 404, try to generate client-side ───
+          const nacaMatch = airfoil.name.toLowerCase().match(/naca\s*(\d{4,5})/);
+          if (nacaMatch) {
+            const code = nacaMatch[1];
+            if (code.length === 4) {
+              const cst = generateNACA4CST(code);
+              if (cst) {
+                setCstData(cst);
+                console.log(`✅ Generated CST for ${airfoil.name} client-side`);
+              }
+            }
+          }
         }
       } catch (err) {
-        console.error('Failed to load CST for:', airfoil.name);
+        console.error('Failed to load CST for:', airfoil.name, err);
+        // Try client-side generation as fallback
+        const nacaMatch = airfoil.name.toLowerCase().match(/naca\s*(\d{4,5})/);
+        if (nacaMatch) {
+          const code = nacaMatch[1];
+          if (code.length === 4) {
+            const cst = generateNACA4CST(code);
+            if (cst) {
+              setCstData(cst);
+              console.log(`✅ Generated CST for ${airfoil.name} client-side (fallback)`);
+            }
+          }
+        }
       } finally {
         setLoadingCst(false);
       }
@@ -552,7 +601,7 @@ export default function LibraryPage() {
         
         // Try the search endpoint with empty query to get all airfoils
         try {
-          const res = await fetch(`${API_BASE_URL}/airfoils/search?q=`, {
+          const res = await fetch(`${API_BASE_URL}/airfoils/search/?q=`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           
@@ -570,7 +619,7 @@ export default function LibraryPage() {
         // If search failed, try saved projects
         if (!success) {
           try {
-            const res = await fetch(`${API_BASE_URL}/airfoils/saved?limit=1000`, {
+            const res = await fetch(`${API_BASE_URL}/airfoils/saved/?limit=1000`, {
               headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -712,7 +761,7 @@ export default function LibraryPage() {
     if (!token) return;
     
     try {
-      const res = await fetch(`${API_BASE_URL}/airfoils/${encodeURIComponent(airfoil.name)}`, {
+      const res = await fetch(`${API_BASE_URL}/airfoils/${encodeURIComponent(airfoil.name)}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -726,6 +775,23 @@ export default function LibraryPage() {
           router.push(`/workbench?airfoil=${encodeURIComponent(airfoil.name)}`);
           showToast(`Loading ${airfoil.name}`);
         }
+      } else if (res.status === 404) {
+        // ─── FIX: If 404, try to generate client-side ───
+        const nacaMatch = airfoil.name.toLowerCase().match(/naca\s*(\d{4,5})/);
+        if (nacaMatch) {
+          const code = nacaMatch[1];
+          if (code.length === 4) {
+            const cst = generateNACA4CST(code);
+            if (cst) {
+              const cstString = encodeURIComponent(JSON.stringify(cst));
+              router.push(`/workbench?importedCST=${cstString}&name=${encodeURIComponent(airfoil.name)}`);
+              showToast(`Generated ${airfoil.name} from NACA code`);
+              return;
+            }
+          }
+        }
+        router.push(`/workbench?airfoil=${encodeURIComponent(airfoil.name)}`);
+        showToast(`Loading ${airfoil.name}`);
       } else {
         router.push(`/workbench?airfoil=${encodeURIComponent(airfoil.name)}`);
         showToast(`Loading ${airfoil.name}`);

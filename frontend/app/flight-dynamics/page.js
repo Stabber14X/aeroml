@@ -771,7 +771,7 @@ function FlightDynamicsContent() {
     try {
       const flat = [...cst.a_upper, ...cst.a_lower];
       // 1. Aerodynamics
-      const pR = await fetch(`${API}/predict`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` }, body: JSON.stringify({ cst_coefficients: flat, reynolds: cond.reynolds, alpha: cond.alpha, mach: cond.mach }) });
+      const pR = await fetch(`${API}/predict/`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tok}` }, body: JSON.stringify({ cst_coefficients: flat, reynolds: cond.reynolds, alpha: cond.alpha, mach: cond.mach }) });
       if (!pR.ok || tick !== pipelineToken.current) return;
       const pD = await pR.json();
       setAero({ cl: pD.cl, cd: pD.cd, cm: pD.cm });

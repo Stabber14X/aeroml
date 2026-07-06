@@ -44,7 +44,8 @@ const fetchInitialPrediction = async (cstParams) => {
   if (!token) return 0.4;
   try {
     const cst_coefficients = [...cstParams.a_upper, ...cstParams.a_lower];
-    const response = await fetch(`${API_BASE_URL}/predict`, {
+    // FIX: Added trailing slash to /predict/
+    const response = await fetch(`${API_BASE_URL}/predict/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify({
