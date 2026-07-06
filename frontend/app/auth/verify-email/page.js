@@ -1,13 +1,15 @@
+// frontend/app/auth/verify-email/page.js
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ParticlesCanvas from '@/components/ParticlesCanvas';
 import styles from '../auth.module.css';
 import { FiCheckCircle, FiXCircle, FiLoader } from 'react-icons/fi';
 
-export default function VerifyEmail() {
+// ─── COMPONENT THAT USES useSearchParams ──────────────────────────────
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token');
@@ -33,7 +35,6 @@ export default function VerifyEmail() {
         if (response.ok) {
           setStatus('success');
           setMessage('Your email has been verified successfully!');
-          // Redirect to login after 3 seconds
           setTimeout(() => {
             router.push('/auth/login');
           }, 3000);
@@ -113,5 +114,41 @@ export default function VerifyEmail() {
         `}</style>
       </div>
     </div>
+  );
+}
+
+// ─── MAIN PAGE WITH SUSPENSE BOUNDARY ──────────────────────────────────
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '100vh',
+        background: '#0b1116',
+        color: '#e2e8f0'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: '3px solid #1e293b',
+            borderTopColor: '#38bdf8',
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <div style={{ fontSize: '14px', color: '#64748b' }}>Loading...</div>
+          <style>{`
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
