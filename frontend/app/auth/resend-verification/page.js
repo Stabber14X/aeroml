@@ -21,7 +21,7 @@ function ResendVerificationContent() {
 
     try {
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://aeroml-production.up.railway.app';
-      const response = await fetch(${API_URL}/auth/resend-verification, {
+      const response = await fetch(`${API_URL}/auth/resend-verification`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
