@@ -1,4 +1,4 @@
-# CORE WEB FRAMEWORK
+﻿# CORE WEB FRAMEWORK
 fastapi==0.109.0
 uvicorn[standard]==0.27.0
 python-multipart==0.0.9
@@ -29,7 +29,7 @@ redis==5.0.1
 # RATE LIMITING
 slowapi==0.1.9
 
-# ML & SCIENTIFIC COMPUTING
+# ML & SCIENTIFIC COMPUTING - NO PANDAS!
 torch==2.2.0 --index-url https://download.pytorch.org/whl/cpu
 numpy==1.26.4
 scipy==1.11.4
