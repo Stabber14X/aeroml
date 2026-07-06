@@ -1,19 +1,24 @@
+# backend/app/core/config.py
 import os
+from typing import Optional
 
 class Settings:
     # ─── DATABASE CONFIGURATION ─────────────────────────────────────────────
-    # PRIORITY 1: Use Railway's DATABASE_URL (auto-provided)
+    # Your actual Railway PostgreSQL credentials
+    # Priority 1: Use the exact Railway environment variables
+    POSTGRES_USER: str = os.getenv("PGUSER", os.getenv("POSTGRES_USER", "postgres"))
+    POSTGRES_PASSWORD: str = os.getenv("PGPASSWORD", os.getenv("POSTGRES_PASSWORD", "UmSaWRPvblHcUSClWeXGTKqvTSPSIzeG"))
+    POSTGRES_HOST: str = os.getenv("PGHOST", os.getenv("POSTGRES_HOST", "hayabusa.proxy.rlwy.net"))
+    POSTGRES_PORT: str = os.getenv("PGPORT", os.getenv("POSTGRES_PORT", "37086"))
+    POSTGRES_DB: str = os.getenv("PGDATABASE", os.getenv("POSTGRES_DB", "railway"))
+    
+    # Priority 2: Use DATABASE_URL if provided (Railway sometimes provides this)
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     
-    # PRIORITY 2: Fallback for local development
-    DB_USER: str = os.getenv("POSTGRES_USER", "postgres")
-    DB_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "aeroml_secure_pass")
-    DB_HOST: str = os.getenv("POSTGRES_HOST", "127.0.0.1")
-    DB_NAME: str = os.getenv("POSTGRES_DB", "aeroml_v6")
-    
-    # Build SQLAlchemy URL - Use DATABASE_URL if available (Railway)
+    # ─── BUILD DATABASE URL ──────────────────────────────────────────────────
+    # First, try to use DATABASE_URL if it exists
     if DATABASE_URL:
-        # Ensure asyncpg driver is used
+        print(f"✅ Using DATABASE_URL from environment")
         if DATABASE_URL.startswith("postgresql://"):
             SQLALCHEMY_DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
         elif DATABASE_URL.startswith("postgresql+asyncpg://"):
@@ -21,8 +26,21 @@ class Settings:
         else:
             SQLALCHEMY_DATABASE_URL = DATABASE_URL
     else:
-        # Local development fallback
-        SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+        # Build from individual Railway variables
+        print(f"✅ Building DATABASE_URL from individual variables")
+        SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    
+    # Print connection details for debugging (password masked)
+    masked_url = SQLALCHEMY_DATABASE_URL
+    if "@" in masked_url:
+        parts = masked_url.split("@")
+        if ":" in parts[0]:
+            masked_url = parts[0].split(":")[0] + ":****@" + parts[1]
+    
+    print(f"📊 Database URL: {masked_url[:80]}...")
+    print(f"📍 Host: {POSTGRES_HOST}:{POSTGRES_PORT}")
+    print(f"📁 Database: {POSTGRES_DB}")
+    print(f"👤 User: {POSTGRES_USER}")
     
     # ─── SECURITY ────────────────────────────────────────────────────────────
     SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here-change-this")
@@ -59,12 +77,3 @@ class Settings:
     RATE_LIMIT_SIGNUP_PER_HOUR = 5
 
 settings = Settings()
-
-# ─── DEBUG: Print database connection info (remove in production) ──────
-if __name__ == "__main__":
-    print("=" * 60)
-    print("🔍 DATABASE CONFIGURATION DEBUG")
-    print("=" * 60)
-    print(f"DATABASE_URL from env: {'✅ SET' if settings.DATABASE_URL else '❌ NOT SET'}")
-    print(f"Using SQLALCHEMY_DATABASE_URL: {settings.SQLALCHEMY_DATABASE_URL[:50]}...")
-    print("=" * 60)
