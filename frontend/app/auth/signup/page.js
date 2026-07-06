@@ -70,7 +70,7 @@ function SignupContent() {
             <button
               type="button"
               onClick={() => setSelectedPlan('freemium')}
-              className={\\ \\}
+              className={${styles.planBtn} }
             >
               <span className={styles.planBtnIcon}>🎯</span>
               <div>
@@ -82,7 +82,7 @@ function SignupContent() {
             <button
               type="button"
               onClick={() => setSelectedPlan('premium')}
-              className={\\ \\}
+              className={${styles.planBtn} }
             >
               <span className={styles.planBtnIcon}>🚀</span>
               <div>
