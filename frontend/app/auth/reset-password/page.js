@@ -1,15 +1,15 @@
+// frontend/app/auth/reset-password/page.js
 'use client';
 
-// frontend/src/app/auth/reset-password/page.js
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import ParticlesCanvas from '@/components/ParticlesCanvas';
 import { authAPI } from '@/lib/api';
 import styles from '../auth.module.css';
 
-export default function ResetPassword() {
+// ─── COMPONENT THAT USES useSearchParams ──────────────────────────────
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -147,5 +147,41 @@ export default function ResetPassword() {
         </form>
       </div>
     </div>
+  );
+}
+
+// ─── MAIN PAGE WITH SUSPENSE BOUNDARY ──────────────────────────────────
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '100vh',
+        background: '#0b1116',
+        color: '#e2e8f0'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: '3px solid #1e293b',
+            borderTopColor: '#38bdf8',
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <div style={{ fontSize: '14px', color: '#64748b' }}>Loading...</div>
+          <style>{`
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
