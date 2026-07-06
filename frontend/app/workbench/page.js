@@ -25,7 +25,7 @@ import {
     FiChevronDown, FiCrosshair, FiBox, FiCompass
 } from 'react-icons/fi';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = 'https://aeroml-production.up.railway.app';
 
 // --- MATH SANITIZATION ---
 const safe = (val, fallback = 0) => (Number.isFinite(val) && !Number.isNaN(val) ? val : fallback);

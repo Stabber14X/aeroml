@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import styles from './SearchModal.module.css';
 
 // --- Configuration ---
-const API_BASE_URL = 'http://127.0.0.1:8000'; // Secured IPv4 connection
+const API_BASE_URL = 'https://aeroml-production.up.railway.app'; // Secured IPv4 connection
 
 export default function SearchModal() {
   const [isOpen, setIsOpen] = useState(false);

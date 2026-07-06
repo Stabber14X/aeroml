@@ -19,7 +19,7 @@ import {
 import SubscriptionGuard from '@/components/SubscriptionGuard';
 import styles from './flight-dynamics.module.css';
 
-const API = 'http://127.0.0.1:8000';
+const API = 'https://aeroml-production.up.railway.app';
 
 /* ============================================================================
  * PHYSICS ENGINES

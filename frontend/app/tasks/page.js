@@ -6,7 +6,7 @@ import SubscriptionGuard from '@/components/SubscriptionGuard';
 import styles from '../dashboard/dashboard.module.css';
 import taskStyles from './tasks.module.css';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = 'https://aeroml-production.up.railway.app';
 
 // Global Task Cache to persist status across navigation (simulating a global store)
 const globalTaskCache = {};

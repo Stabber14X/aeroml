@@ -17,7 +17,7 @@ import {
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = 'https://aeroml-production.up.railway.app';
 
 // ─── TOAST SYSTEM ──────────────────────────────────────────────
 function ToastContainer({ toasts, removeToast }) {

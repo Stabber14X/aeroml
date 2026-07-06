@@ -1,7 +1,7 @@
 // frontend/src/lib/api.js
 // COMPLETE FIXED IMPLEMENTATION
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://aeroml-production.up.railway.app';
 
 function getToken() {
   if (typeof window === 'undefined') return '';

@@ -4,7 +4,7 @@ import libraryStyles from '@/app/library/library.module.css';
 import { generateAirfoilCoordinates } from '@/lib/cst_geometry';
 
 // We need API access to fetch coordinates if they are missing
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = 'https://aeroml-production.up.railway.app';
 
 /* ---------------------------- */
 /* NACA GENERATOR            */

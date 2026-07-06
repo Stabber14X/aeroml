@@ -53,7 +53,7 @@ export default function FileDropzone({ onFileLoaded }) {
         formData.append('file', file);
 
         try {
-            const res = await fetch('http://127.0.0.1:8000/airfoils/import', {
+            const res = await fetch('https://aeroml-production.up.railway.app/airfoils/import', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
