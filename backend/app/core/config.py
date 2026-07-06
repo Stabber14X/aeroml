@@ -4,15 +4,17 @@ from typing import Optional
 
 class Settings:
     # ─── DATABASE CONFIGURATION ─────────────────────────────────────────────
-    # Your actual Railway PostgreSQL credentials
-    # Priority 1: Use the exact Railway environment variables
+    # Railway injects these variables when services are connected
+    # Priority 1: Use Railway's internal PostgreSQL variables
     POSTGRES_USER: str = os.getenv("PGUSER", os.getenv("POSTGRES_USER", "postgres"))
     POSTGRES_PASSWORD: str = os.getenv("PGPASSWORD", os.getenv("POSTGRES_PASSWORD", "UmSaWRPvblHcUSClWeXGTKqvTSPSIzeG"))
-    POSTGRES_HOST: str = os.getenv("PGHOST", os.getenv("POSTGRES_HOST", "hayabusa.proxy.rlwy.net"))
-    POSTGRES_PORT: str = os.getenv("PGPORT", os.getenv("POSTGRES_PORT", "37086"))
+    
+    # CRITICAL FIX: Use Railway internal hostname when available
+    POSTGRES_HOST: str = os.getenv("PGHOST", os.getenv("POSTGRES_HOST", "postgres-7ytz.railway.internal"))
+    POSTGRES_PORT: str = os.getenv("PGPORT", os.getenv("POSTGRES_PORT", "5432"))
     POSTGRES_DB: str = os.getenv("PGDATABASE", os.getenv("POSTGRES_DB", "railway"))
     
-    # Priority 2: Use DATABASE_URL if provided (Railway sometimes provides this)
+    # Priority 2: Use DATABASE_URL if provided
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     
     # ─── BUILD DATABASE URL ──────────────────────────────────────────────────
