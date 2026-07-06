@@ -40,7 +40,7 @@ async def run_migrations():
                 return
                 
             await conn.execute(text("""
-                DO utf8 
+                DO main 
                 BEGIN
                     IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                                   WHERE table_name='users' AND column_name='is_admin') THEN
@@ -128,7 +128,8 @@ async def run_migrations():
                     CREATE INDEX IF NOT EXISTS idx_users_trial_expires ON users(trial_expires_at);
                     CREATE INDEX IF NOT EXISTS idx_users_subscription_expires ON users(subscription_expires_at);
                     
-                END utf8;
+                END main;
             """))
+            print("✅ Database migrations completed successfully")
         except Exception as e:
             print(f"Migration warning: {e}")
