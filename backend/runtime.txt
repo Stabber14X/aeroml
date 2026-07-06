@@ -1,1 +1,1 @@
-﻿echo "python-3.12" > backend/runtime.txt
+﻿python-3.12
