@@ -2,7 +2,7 @@
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies for ML packages
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements first for better caching
 COPY backend/requirements.txt .
 
-# Install dependencies (NO PANDAS!)
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt \
     --extra-index-url https://download.pytorch.org/whl/cpu
 

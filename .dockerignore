@@ -11,3 +11,5 @@ venv
 trained_models/*.pth
 trained_models/*.pt
 trained_models/*.npz
+frontend/
+tools/
