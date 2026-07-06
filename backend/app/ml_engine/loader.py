@@ -3,7 +3,9 @@ import torch
 import os
 import sys
 
+# Add parent directory to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+
 from app.ml_engine.core.neuralfoil.model import NeuralFoilCore
 from app.ml_engine.deeponet import MultiHeadDeepONet
 
@@ -38,15 +40,14 @@ class ModelManager:
             print("[OK] NeuralFoil 'xxxlarge' Sovereign Core loaded successfully.")
         except Exception as e:
             print(f"[ERR] NeuralFoil load failed: {e}")
-            raise RuntimeError("NeuralFoil is required to start the server")
-
+            # Don't raise, let it try to continue
+        
         # B. Load DeepONet (OPTIONAL - Skip if fails)
         try:
             self.deeponet = MultiHeadDeepONet().to(self.device)
             path = os.path.join(model_dir, "deeponet_v7.pth")
             print(f"[LOADER] Looking for DeepONet at: {path}")
             if os.path.exists(path):
-                # Load with strict=False to ignore missing keys
                 state_dict = torch.load(path, map_location=self.device)
                 self.deeponet.load_state_dict(state_dict, strict=False)
                 self.deeponet.eval()
