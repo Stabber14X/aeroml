@@ -1,12 +1,15 @@
+// frontend/app/auth/verify-notice/page.js
 'use client';
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import ParticlesCanvas from '@/components/ParticlesCanvas';
 import styles from '../auth.module.css';
 import { FiMail, FiCheckCircle, FiArrowRight } from 'react-icons/fi';
 
-export default function VerifyNotice() {
+// ─── COMPONENT THAT USES useSearchParams ──────────────────────────────
+function VerifyNoticeContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || 'your email';
 
@@ -72,5 +75,41 @@ export default function VerifyNotice() {
         </div>
       </div>
     </div>
+  );
+}
+
+// ─── MAIN PAGE WITH SUSPENSE BOUNDARY ──────────────────────────────────
+export default function VerifyNoticePage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '100vh',
+        background: '#0b1116',
+        color: '#e2e8f0'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: '3px solid #1e293b',
+            borderTopColor: '#38bdf8',
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <div style={{ fontSize: '14px', color: '#64748b' }}>Loading...</div>
+          <style>{`
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      </div>
+    }>
+      <VerifyNoticeContent />
+    </Suspense>
   );
 }
