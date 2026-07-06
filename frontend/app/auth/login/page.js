@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ function LoginContent() {
     try {
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://aeroml-production.up.railway.app';
       
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(${API_URL}/auth/login, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -56,7 +56,7 @@ function LoginContent() {
         setError(data.detail || 'Login failed');
       }
     } catch (err) {
-      setError(`Network error. Please make sure the backend is running on ${API_URL}`);
+      setError('Network error. Please make sure the backend is running.');
     }
     
     setLoading(false);
@@ -121,7 +121,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div style={{display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0b1116',color:'#e2e8f0'}}>Loading...</div>}>
       <LoginContent />
     </Suspense>
   );

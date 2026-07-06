@@ -1,13 +1,13 @@
-'use client';
+﻿'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ParticlesCanvas from '@/components/ParticlesCanvas';
 import styles from '../auth.module.css';
 import { FiCheck, FiZap, FiClock } from 'react-icons/fi';
 
-export default function Signup() {
+function SignupContent() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +33,8 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/auth/signup', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://aeroml-production.up.railway.app';
+      const response = await fetch(${API_URL}/auth/signup, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -44,14 +45,12 @@ export default function Signup() {
       });
 
       if (response.ok) {
-        // ✅ Redirect to verify-notice page with email
-        router.push(`/auth/verify-notice?email=${encodeURIComponent(email)}`);
+        router.push(/auth/verify-notice?email=);
       } else {
         const data = await response.json();
         setError(data.detail || 'Signup failed');
       }
     } catch (err) {
-      console.error('Signup error:', err);
       setError('Network error. Please try again.');
     }
     
@@ -61,20 +60,17 @@ export default function Signup() {
   return (
     <div className={styles.pageWrapper}>
       <ParticlesCanvas />
-      
       <div className={styles.glassCard}>
         <div className={styles.header}>
           <h1 className={styles.title}>Create Account</h1>
           <p className={styles.subtitle}>Choose your plan to get started</p>
         </div>
-
         <form onSubmit={handleSignup}>
-          {/* Plan Selection - Clean Toggle Style */}
           <div className={styles.planToggle}>
             <button
               type="button"
               onClick={() => setSelectedPlan('freemium')}
-              className={`${styles.planBtn} ${selectedPlan === 'freemium' ? styles.planBtnActive : ''}`}
+              className={\\ \\}
             >
               <span className={styles.planBtnIcon}>🎯</span>
               <div>
@@ -83,16 +79,15 @@ export default function Signup() {
                 <div className={styles.planBtnDesc}>24-hour trial</div>
               </div>
             </button>
-
             <button
               type="button"
               onClick={() => setSelectedPlan('premium')}
-              className={`${styles.planBtn} ${selectedPlan === 'premium' ? styles.planBtnActive : ''}`}
+              className={\\ \\}
             >
               <span className={styles.planBtnIcon}>🚀</span>
               <div>
                 <div className={styles.planBtnName}>Premium</div>
-                <div className={styles.planBtnPrice}>$19/mo</div>
+                <div className={styles.planBtnPrice}>/mo</div>
                 <div className={styles.planBtnDesc}>Full access</div>
               </div>
             </button>
@@ -154,5 +149,13 @@ export default function Signup() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div style={{display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0b1116',color:'#e2e8f0'}}>Loading...</div>}>
+      <SignupContent />
+    </Suspense>
   );
 }

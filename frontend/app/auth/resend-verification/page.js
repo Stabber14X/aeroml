@@ -1,13 +1,13 @@
-'use client';
+﻿'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ParticlesCanvas from '@/components/ParticlesCanvas';
 import styles from '../auth.module.css';
 import { FiMail, FiArrowRight } from 'react-icons/fi';
 
-export default function ResendVerification() {
+function ResendVerificationContent() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,8 @@ export default function ResendVerification() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/auth/resend-verification', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://aeroml-production.up.railway.app';
+      const response = await fetch(${API_URL}/auth/resend-verification, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -87,7 +88,6 @@ export default function ResendVerification() {
   return (
     <div className={styles.pageWrapper}>
       <ParticlesCanvas />
-      
       <div className={styles.glassCard}>
         <div className={styles.header}>
           <h1 className={styles.title}>Resend Verification</h1>
@@ -128,5 +128,13 @@ export default function ResendVerification() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResendVerificationPage() {
+  return (
+    <Suspense fallback={<div style={{display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0b1116',color:'#e2e8f0'}}>Loading...</div>}>
+      <ResendVerificationContent />
+    </Suspense>
   );
 }

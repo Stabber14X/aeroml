@@ -1,15 +1,13 @@
-'use client';
+﻿'use client';
 
-// frontend/src/app/auth/forgot-password/page.js
-
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ParticlesCanvas from '@/components/ParticlesCanvas';
 import { authAPI } from '@/lib/api';
 import styles from '../auth.module.css';
 
-export default function ForgotPassword() {
+function ForgotPasswordContent() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -56,7 +54,6 @@ export default function ForgotPassword() {
   return (
     <div className={styles.pageWrapper}>
       <ParticlesCanvas />
-      
       <div className={styles.glassCard}>
         <div className={styles.header}>
           <h1 className={styles.title}>Reset Password</h1>
@@ -96,5 +93,13 @@ export default function ForgotPassword() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense fallback={<div style={{display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0b1116',color:'#e2e8f0'}}>Loading...</div>}>
+      <ForgotPasswordContent />
+    </Suspense>
   );
 }
