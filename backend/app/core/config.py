@@ -1,38 +1,24 @@
-# backend/app/core/config.py
 import os
 from typing import Optional
 
 class Settings:
     # ─── DATABASE CONFIGURATION ─────────────────────────────────────────────
-    # Railway injects these variables when services are connected
-    # Priority 1: Use Railway's internal PostgreSQL variables
-    POSTGRES_USER: str = os.getenv("PGUSER", os.getenv("POSTGRES_USER", "postgres"))
-    POSTGRES_PASSWORD: str = os.getenv("PGPASSWORD", os.getenv("POSTGRES_PASSWORD", "UmSaWRPvblHcUSClWeXGTKqvTSPSIzeG"))
+    # Fetch the URL from Railway's environment
+    raw_db_url = os.getenv("DATABASE_URL")
     
-    # CRITICAL FIX: Use Railway internal hostname when available
-    POSTGRES_HOST: str = os.getenv("PGHOST", os.getenv("POSTGRES_HOST", "postgres-7ytz.railway.internal"))
-    POSTGRES_PORT: str = os.getenv("PGPORT", os.getenv("POSTGRES_PORT", "5432"))
-    POSTGRES_DB: str = os.getenv("PGDATABASE", os.getenv("POSTGRES_DB", "railway"))
-    
-    # Priority 2: Use DATABASE_URL if provided
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
-    
-    # ─── BUILD DATABASE URL ──────────────────────────────────────────────────
-    # First, try to use DATABASE_URL if it exists
-    if DATABASE_URL:
-        print(f"✅ Using DATABASE_URL from environment")
-        if DATABASE_URL.startswith("postgresql://"):
-            SQLALCHEMY_DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
-        elif DATABASE_URL.startswith("postgresql+asyncpg://"):
-            SQLALCHEMY_DATABASE_URL = DATABASE_URL
+    if raw_db_url:
+        # Railway provides 'postgresql://', but asyncpg requires 'postgresql+asyncpg://'
+        if raw_db_url.startswith("postgresql://"):
+            SQLALCHEMY_DATABASE_URL = raw_db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
         else:
-            SQLALCHEMY_DATABASE_URL = DATABASE_URL
+            SQLALCHEMY_DATABASE_URL = raw_db_url
+        print(f"✅ Using DATABASE_URL from environment")
     else:
-        # Build from individual Railway variables
-        print(f"✅ Building DATABASE_URL from individual variables")
-        SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+        # Fallback for your local development environment
+        SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://postgres:aeroml_secure_pass@127.0.0.1/aeroml_v6"
+        print(f"⚠️ Using local fallback DATABASE_URL")
     
-    # Print connection details for debugging (password masked)
+    # Mask password for logs
     masked_url = SQLALCHEMY_DATABASE_URL
     if "@" in masked_url:
         parts = masked_url.split("@")
@@ -40,16 +26,16 @@ class Settings:
             masked_url = parts[0].split(":")[0] + ":****@" + parts[1]
     
     print(f"📊 Database URL: {masked_url[:80]}...")
-    print(f"📍 Host: {POSTGRES_HOST}:{POSTGRES_PORT}")
-    print(f"📁 Database: {POSTGRES_DB}")
-    print(f"👤 User: {POSTGRES_USER}")
+    
+    # ─── REDIS CONFIGURATION ──────────────────────────────────────────────
+    REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
     
     # ─── SECURITY ────────────────────────────────────────────────────────────
     SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here-change-this")
     
     # ─── CELERY ──────────────────────────────────────────────────────────────
-    CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL", "redis://127.0.0.1:6379/0")
-    CELERY_RESULT_BACKEND: str = os.getenv("CELERY_RESULT_BACKEND", "redis://127.0.0.1:6379/0")
+    CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL", REDIS_URL)
+    CELERY_RESULT_BACKEND: str = os.getenv("CELERY_RESULT_BACKEND", REDIS_URL)
     
     # ─── ADMIN EMAILS ───────────────────────────────────────────────────────
     ADMIN_EMAILS = [
@@ -70,9 +56,6 @@ class Settings:
     TRIAL_DURATION_HOURS = 24
     PREMIUM_DURATION_DAYS = 30
     PREMIUM_PRICE_MONTHLY = 19.00
-    
-    # ─── REDIS FOR RATE LIMITING ──────────────────────────────────────────
-    REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/1")
     
     # ─── RATE LIMITING SETTINGS ───────────────────────────────────────────
     RATE_LIMIT_PER_MINUTE = 100
