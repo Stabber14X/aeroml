@@ -60,14 +60,10 @@ async def check_admin_access(user: User) -> bool:
         return False
     return True
 
-# ─── ADMIN ENDPOINTS ─────────────────────────────────────────────
+# ─── SHARED IMPLEMENTATION ──────────────────────────────────────
 
-@router.get("/stats", response_model=AdminStatsResponse)
-async def get_admin_stats(
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Get admin dashboard statistics"""
+async def _get_admin_stats_impl(current_user: User, db: AsyncSession):
+    """Core admin stats implementation shared by both routes."""
     if not await check_admin_access(current_user):
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -119,15 +115,14 @@ async def get_admin_stats(
         signups_last_30_days=signups_30d
     )
 
-@router.get("/users", response_model=List[UserAdminResponse])
-async def get_all_users(
-    status: Optional[str] = Query(None, description="Filter by status: all, active, expired, premium, trial"),
-    limit: int = Query(100, ge=1, le=500),
-    offset: int = Query(0, ge=0),
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
+async def _get_all_users_impl(
+    status: Optional[str],
+    limit: int,
+    offset: int,
+    current_user: User,
+    db: AsyncSession
 ):
-    """Get all users with their subscription status"""
+    """Core get all users implementation shared by both routes."""
     if not await check_admin_access(current_user):
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -186,13 +181,8 @@ async def get_all_users(
     
     return response
 
-@router.get("/users/{user_id}", response_model=UserAdminResponse)
-async def get_user_details(
-    user_id: int,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Get specific user details"""
+async def _get_user_details_impl(user_id: int, current_user: User, db: AsyncSession):
+    """Core get user details implementation shared by both routes."""
     if not await check_admin_access(current_user):
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -219,13 +209,8 @@ async def get_user_details(
         days_left=status_info.get("days_left")
     )
 
-@router.post("/users/{user_id}/toggle-active", response_model=AdminActionResponse)
-async def toggle_user_active(
-    user_id: int,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Toggle user active status (disable/enable)"""
+async def _toggle_user_active_impl(user_id: int, current_user: User, db: AsyncSession):
+    """Core toggle user active implementation shared by both routes."""
     if not await check_admin_access(current_user):
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -252,13 +237,8 @@ async def toggle_user_active(
         action="toggle_active"
     )
 
-@router.post("/users/{user_id}/grant-premium", response_model=AdminActionResponse)
-async def admin_grant_premium(
-    user_id: int,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Grant premium access to a user"""
+async def _admin_grant_premium_impl(user_id: int, current_user: User, db: AsyncSession):
+    """Core grant premium implementation shared by both routes."""
     if not await check_admin_access(current_user):
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -288,14 +268,8 @@ async def admin_grant_premium(
         action="grant_premium"
     )
 
-@router.post("/users/{user_id}/extend-trial", response_model=AdminActionResponse)
-async def admin_extend_trial(
-    user_id: int,
-    hours: int = Query(24, ge=1, le=168),
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Extend trial for a user"""
+async def _admin_extend_trial_impl(user_id: int, hours: int, current_user: User, db: AsyncSession):
+    """Core extend trial implementation shared by both routes."""
     if not await check_admin_access(current_user):
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -321,13 +295,8 @@ async def admin_extend_trial(
         action="extend_trial"
     )
 
-@router.delete("/users/{user_id}", response_model=AdminActionResponse)
-async def delete_user(
-    user_id: int,
-    current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db)
-):
-    """Delete a user (admin only)"""
+async def _delete_user_impl(user_id: int, current_user: User, db: AsyncSession):
+    """Core delete user implementation shared by both routes."""
     if not await check_admin_access(current_user):
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -353,12 +322,190 @@ async def delete_user(
         action="delete"
     )
 
-@router.get("/revenue/export")
+
+# ============================================================================
+# ADMIN ENDPOINTS - WITH TRAILING SLASH
+# ============================================================================
+
+@router.get("/stats/", response_model=AdminStatsResponse)
+async def get_admin_stats(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get admin dashboard statistics"""
+    return await _get_admin_stats_impl(current_user, db)
+
+@router.get("/users/", response_model=List[UserAdminResponse])
+async def get_all_users(
+    status: Optional[str] = Query(None, description="Filter by status: all, active, expired, premium, trial"),
+    limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get all users with their subscription status"""
+    return await _get_all_users_impl(status, limit, offset, current_user, db)
+
+@router.get("/users/{user_id}/", response_model=UserAdminResponse)
+async def get_user_details(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get specific user details"""
+    return await _get_user_details_impl(user_id, current_user, db)
+
+@router.post("/users/{user_id}/toggle-active/", response_model=AdminActionResponse)
+async def toggle_user_active(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Toggle user active status (disable/enable)"""
+    return await _toggle_user_active_impl(user_id, current_user, db)
+
+@router.post("/users/{user_id}/grant-premium/", response_model=AdminActionResponse)
+async def admin_grant_premium(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Grant premium access to a user"""
+    return await _admin_grant_premium_impl(user_id, current_user, db)
+
+@router.post("/users/{user_id}/extend-trial/", response_model=AdminActionResponse)
+async def admin_extend_trial(
+    user_id: int,
+    hours: int = Query(24, ge=1, le=168),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Extend trial for a user"""
+    return await _admin_extend_trial_impl(user_id, hours, current_user, db)
+
+@router.delete("/users/{user_id}/", response_model=AdminActionResponse)
+async def delete_user(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete a user (admin only)"""
+    return await _delete_user_impl(user_id, current_user, db)
+
+@router.get("/revenue/export/")
 async def export_revenue_data(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Export revenue data as CSV (admin only)"""
+    if not await check_admin_access(current_user):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Get all premium users
+    result = await db.execute(select(User).where(User.is_premium == True))
+    premium_users = result.scalars().all()
+    
+    # Generate CSV
+    import csv
+    from io import StringIO
+    
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["Email", "Subscription Started", "Subscription Expires", "Days Left"])
+    
+    now = datetime.utcnow()
+    for user in premium_users:
+        days_left = (user.subscription_expires_at - now).days if user.subscription_expires_at else 0
+        writer.writerow([
+            user.email,
+            user.subscription_started_at.isoformat() if user.subscription_started_at else "",
+            user.subscription_expires_at.isoformat() if user.subscription_expires_at else "",
+            days_left
+        ])
+    
+    from fastapi.responses import StreamingResponse
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=revenue_data.csv"}
+    )
+
+
+# ============================================================================
+# ADMIN ENDPOINTS - WITHOUT TRAILING SLASH (TO PREVENT 307 REDIRECTS)
+# ============================================================================
+
+@router.get("/stats", response_model=AdminStatsResponse)
+async def get_admin_stats_no_slash(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Same as /stats/ but without trailing slash"""
+    return await _get_admin_stats_impl(current_user, db)
+
+@router.get("/users", response_model=List[UserAdminResponse])
+async def get_all_users_no_slash(
+    status: Optional[str] = Query(None, description="Filter by status: all, active, expired, premium, trial"),
+    limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Same as /users/ but without trailing slash"""
+    return await _get_all_users_impl(status, limit, offset, current_user, db)
+
+@router.get("/users/{user_id}", response_model=UserAdminResponse)
+async def get_user_details_no_slash(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Same as /users/{user_id}/ but without trailing slash"""
+    return await _get_user_details_impl(user_id, current_user, db)
+
+@router.post("/users/{user_id}/toggle-active", response_model=AdminActionResponse)
+async def toggle_user_active_no_slash(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Same as /users/{user_id}/toggle-active/ but without trailing slash"""
+    return await _toggle_user_active_impl(user_id, current_user, db)
+
+@router.post("/users/{user_id}/grant-premium", response_model=AdminActionResponse)
+async def admin_grant_premium_no_slash(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Same as /users/{user_id}/grant-premium/ but without trailing slash"""
+    return await _admin_grant_premium_impl(user_id, current_user, db)
+
+@router.post("/users/{user_id}/extend-trial", response_model=AdminActionResponse)
+async def admin_extend_trial_no_slash(
+    user_id: int,
+    hours: int = Query(24, ge=1, le=168),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Same as /users/{user_id}/extend-trial/ but without trailing slash"""
+    return await _admin_extend_trial_impl(user_id, hours, current_user, db)
+
+@router.delete("/users/{user_id}", response_model=AdminActionResponse)
+async def delete_user_no_slash(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Same as /users/{user_id}/ but without trailing slash"""
+    return await _delete_user_impl(user_id, current_user, db)
+
+@router.get("/revenue/export", response_model=AdminActionResponse)
+async def export_revenue_data_no_slash(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Same as /revenue/export/ but without trailing slash"""
     if not await check_admin_access(current_user):
         raise HTTPException(status_code=403, detail="Admin access required")
     
