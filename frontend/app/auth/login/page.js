@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ParticlesCanvas from '@/components/ParticlesCanvas';
 import styles from '../auth.module.css';
 
-export default function Login() {
+function LoginContent() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +19,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const API_URL = 'http://127.0.0.1:8000';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://aeroml-production.up.railway.app';
       
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -29,11 +29,7 @@ export default function Login() {
 
       if (response.ok) {
         const data = await response.json();
-        
-        // Save token
         localStorage.setItem('token', data.access_token);
-        
-        // Save user
         const userData = {
           email: email,
           is_admin: data.is_admin || false,
@@ -43,18 +39,15 @@ export default function Login() {
         };
         localStorage.setItem('user', JSON.stringify(userData));
         
-        // Redirect
         if (data.is_admin) {
           window.location.href = '/admin';
         } else {
           window.location.href = '/dashboard';
         }
       } else if (response.status === 403) {
-        // Handle unverified email
         const data = await response.json();
         if (data.error === 'EMAIL_NOT_VERIFIED') {
           setError('Please verify your email before logging in. Check your inbox for the verification link.');
-          // Show resend option
         } else {
           setError(data.detail || 'Access denied.');
         }
@@ -63,8 +56,7 @@ export default function Login() {
         setError(data.detail || 'Login failed');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Network error. Please make sure the backend is running on http://127.0.0.1:8000');
+      setError(`Network error. Please make sure the backend is running on ${API_URL}`);
     }
     
     setLoading(false);
@@ -73,13 +65,11 @@ export default function Login() {
   return (
     <div className={styles.pageWrapper}>
       <ParticlesCanvas />
-      
       <div className={styles.glassCard}>
         <div className={styles.header}>
           <h1 className={styles.title}>Welcome Back</h1>
           <p className={styles.subtitle}>Sign in to continue designing</p>
         </div>
-
         <form onSubmit={handleLogin}>
           {error && (
             <div className={styles.errorBox}>
@@ -91,7 +81,6 @@ export default function Login() {
               )}
             </div>
           )}
-
           <div className={styles.formGroup}>
             <label className={styles.label}>Email</label>
             <input 
@@ -103,7 +92,6 @@ export default function Login() {
               required 
             />
           </div>
-
           <div className={styles.formGroup}>
             <label className={styles.label}>Password</label>
             <input 
@@ -115,23 +103,26 @@ export default function Login() {
               required 
             />
           </div>
-
           <Link href="/auth/forgot-password" className={styles.forgotLink}>
             Forgot Password?
           </Link>
-
           <button type="submit" className={styles.submitButton} disabled={loading}>
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
-
         <div className={styles.footer}>
           New to AeroML? 
-          <Link href="/auth/signup" className={styles.link}>
-            Create Account
-          </Link>
+          <Link href="/auth/signup" className={styles.link}>Create Account</Link>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
