@@ -1203,13 +1203,11 @@ def _get_target(result: Dict, target: str) -> float:
         "ld": intg["L_D"],
         "transition": intg["transition_upper"],
     }.get(target.lower(), intg["Cl"])
-
-
 # ═══════════════════════════════════════════════════════════════════════════════
-# API ENDPOINTS
+# API ENDPOINTS - WITH TRAILING SLASH
 # ═══════════════════════════════════════════════════════════════════════════════
 
-@router.get("/health")
+@router.get("/health/")
 async def health():
     return {
         "status": "ok",
@@ -1219,7 +1217,7 @@ async def health():
     }
 
 
-@router.get("/defect-types")
+@router.get("/defect-types/")
 async def get_defect_types():
     return {
         "defect_types": [
@@ -1251,7 +1249,7 @@ async def get_defect_types():
     }
 
 
-@router.post("/generate/naca")
+@router.post("/generate/naca/")
 async def api_generate_naca(req: NACARequest):
     try:
         code = req.naca_code.strip()
@@ -1273,7 +1271,7 @@ async def api_generate_naca(req: NACARequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/generate/cst")
+@router.post("/generate/cst/")
 async def api_generate_cst(req: CSTRequest):
     try:
         coords = generate_cst(req.upper_coeffs, req.lower_coeffs,
@@ -1290,7 +1288,7 @@ async def api_generate_cst(req: CSTRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/import/dat")
+@router.post("/import/dat/")
 async def api_import_dat(file: UploadFile = File(...)):
     try:
         raw = await file.read()
@@ -1309,7 +1307,7 @@ async def api_import_dat(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=f"DAT parse error: {e}")
 
 
-@router.post("/import/coordinates")
+@router.post("/import/coordinates/")
 async def api_import_coordinates(req: ImportCoordinatesRequest):
     try:
         coords, name = parse_dat_file(req.text)
@@ -1325,7 +1323,7 @@ async def api_import_coordinates(req: ImportCoordinatesRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/analyze")
+@router.post("/analyze/")
 async def api_analyze(req: AnalysisRequest):
     try:
         coords = np.array(req.coordinates, dtype=float)
@@ -1420,7 +1418,7 @@ async def api_analyze(req: AnalysisRequest):
         raise HTTPException(status_code=500, detail=f"Analysis error: {str(e)}")
 
 
-@router.post("/polar")
+@router.post("/polar/")
 async def api_polar(req: PolarSweepRequest):
     try:
         coords = np.array(req.coordinates, dtype=float)
@@ -1526,7 +1524,7 @@ async def api_polar(req: PolarSweepRequest):
         raise HTTPException(status_code=500, detail=f"Polar error: {str(e)}")
 
 
-@router.post("/sensitivity")
+@router.post("/sensitivity/")
 async def api_sensitivity(req: SensitivityRequest):
     try:
         coords = np.array(req.coordinates, dtype=float)
@@ -1606,3 +1604,44 @@ async def api_sensitivity(req: SensitivityRequest):
     except Exception as e:
         logger.error(f"Sensitivity error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Sensitivity error: {str(e)}")
+
+
+# ============================================================================
+# ADD NO-SLASH VERSIONS OF ALL ROUTES (TO PREVENT 307 REDIRECTS)
+# ============================================================================
+
+@router.get("/health")
+async def health_no_slash():
+    return await health()
+
+@router.get("/defect-types")
+async def get_defect_types_no_slash():
+    return await get_defect_types()
+
+@router.post("/generate/naca")
+async def api_generate_naca_no_slash(req: NACARequest):
+    return await api_generate_naca(req)
+
+@router.post("/generate/cst")
+async def api_generate_cst_no_slash(req: CSTRequest):
+    return await api_generate_cst(req)
+
+@router.post("/import/dat")
+async def api_import_dat_no_slash(file: UploadFile = File(...)):
+    return await api_import_dat(file)
+
+@router.post("/import/coordinates")
+async def api_import_coordinates_no_slash(req: ImportCoordinatesRequest):
+    return await api_import_coordinates(req)
+
+@router.post("/analyze")
+async def api_analyze_no_slash(req: AnalysisRequest):
+    return await api_analyze(req)
+
+@router.post("/polar")
+async def api_polar_no_slash(req: PolarSweepRequest):
+    return await api_polar(req)
+
+@router.post("/sensitivity")
+async def api_sensitivity_no_slash(req: SensitivityRequest):
+    return await api_sensitivity(req)

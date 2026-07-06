@@ -174,10 +174,10 @@ class ExportRequest(BaseModel):
 
 
 # ============================================================================
-# ENDPOINTS
+# ENDPOINTS - WITH TRAILING SLASH VERSIONS
 # ============================================================================
 
-@router.get("/count")
+@router.get("/count/")
 async def get_airfoil_count(db: AsyncSession = Depends(get_db)):
     try:
         count_query = select(func.count(Airfoil.id))
@@ -187,8 +187,7 @@ async def get_airfoil_count(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database Error: {e}")
 
-
-@router.get("/saved")
+@router.get("/saved/")
 async def get_saved_projects(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -234,8 +233,7 @@ async def get_saved_projects(
         
     return saved_list
 
-
-@router.get("/saved/ids")
+@router.get("/saved/ids/")
 async def get_saved_project_ids(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -250,8 +248,7 @@ async def get_saved_project_ids(
     results = await db.execute(query)
     return [{"id": row.id, "name": row.name} for row in results.all()]
 
-
-@router.get("/search")
+@router.get("/search/")
 async def search_airfoils(
     q: str = "",
     db: AsyncSession = Depends(get_db),
@@ -267,8 +264,7 @@ async def search_airfoils(
     # Return as library items
     return [{"id": f"lib_{i}", "name": name, "is_library": True} for i, name in enumerate(matches)]
 
-
-@router.get("/library/all")
+@router.get("/library/all/")
 async def get_all_library_airfoils(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -279,8 +275,7 @@ async def get_all_library_airfoils(
     names = library_cache.get_names()
     return [{"id": f"lib_{i}", "name": name, "is_library": True} for i, name in enumerate(names)]
 
-
-@router.get("/library/names")
+@router.get("/library/names/")
 async def get_library_names(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -290,48 +285,14 @@ async def get_library_names(
     """
     return {"names": library_cache.get_names()}
 
-
-@router.get("/library/count")
+@router.get("/library/count/")
 async def get_library_count():
     """
     Returns the total count of UIUC library airfoils.
     """
     return {"count": len(library_cache.get_names())}
 
-
-@router.get("/library/{name}")
-async def get_library_airfoil(
-    name: str,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    """
-    Gets a specific library airfoil by name with CST coefficients.
-    """
-    airfoil_data = library_cache.get_by_name(name)
-    
-    if not airfoil_data:
-        raise HTTPException(status_code=404, detail=f"Airfoil '{name}' not found in library")
-    
-    cst = airfoil_data.get("cst_coefficients")
-    if not cst or len(cst) != 16:
-        # Generate CST on the fly
-        cst = library_cache._generate_cst_for_name(name)
-    
-    return {
-        "id": 0,
-        "name": name,
-        "cst_coefficients": cst,
-        "reynolds": 3000000.0,
-        "alpha": 5.0,
-        "cl": 0.0,
-        "cd": 0.0,
-        "cm": 0.0,
-        "is_library": True
-    }
-
-
-@router.get("/{identifier}", response_model=AirfoilDetail)
+@router.get("/{identifier}/")
 async def get_airfoil_details(
     identifier: str, 
     db: AsyncSession = Depends(get_db),
@@ -415,8 +376,7 @@ async def get_airfoil_details(
 
     return response
 
-
-@router.post("/import")
+@router.post("/import/")
 async def import_airfoil_file(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user)
@@ -438,8 +398,7 @@ async def import_airfoil_file(
         print(f"Import Error: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to fit geometry: {str(e)}")
 
-
-@router.post("/export")
+@router.post("/export/")
 async def export_airfoil(
     data: ExportRequest,
     current_user: User = Depends(get_current_user)
@@ -460,8 +419,7 @@ async def export_airfoil(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Export failed: {str(e)}")
 
-
-@router.post("/save", status_code=status.HTTP_201_CREATED)
+@router.post("/save/", status_code=status.HTTP_201_CREATED)
 async def save_airfoil_project(
     data: AirfoilSave,
     db: AsyncSession = Depends(get_db),
@@ -603,7 +561,7 @@ async def save_airfoil_project(
         raise HTTPException(status_code=500, detail=f"Database insertion failed: {e}")
 
 
-@router.delete("/{airfoil_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{airfoil_id}/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_airfoil(
     airfoil_id: int,
     db: AsyncSession = Depends(get_db),
@@ -627,3 +585,92 @@ async def delete_airfoil(
         print(f"Delete Error: {e}")
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to delete project: {str(e)}")
+
+
+# ============================================================================
+# ADD NO-SLASH VERSIONS OF ALL ROUTES (TO PREVENT 307 REDIRECTS)
+# ============================================================================
+
+@router.get("/count")
+async def get_airfoil_count_no_slash(db: AsyncSession = Depends(get_db)):
+    return await get_airfoil_count(db)
+
+@router.get("/saved")
+async def get_saved_projects_no_slash(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    limit: int = 50,
+    offset: int = 0
+):
+    return await get_saved_projects(db, current_user, limit, offset)
+
+@router.get("/saved/ids")
+async def get_saved_project_ids_no_slash(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await get_saved_project_ids(db, current_user)
+
+@router.get("/search")
+async def search_airfoils_no_slash(
+    q: str = "",
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await search_airfoils(q, db, current_user)
+
+@router.get("/library/all")
+async def get_all_library_airfoils_no_slash(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await get_all_library_airfoils(db, current_user)
+
+@router.get("/library/names")
+async def get_library_names_no_slash(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await get_library_names(db, current_user)
+
+@router.get("/library/count")
+async def get_library_count_no_slash():
+    return await get_library_count()
+
+@router.get("/{identifier}")
+async def get_airfoil_details_no_slash(
+    identifier: str, 
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await get_airfoil_details(identifier, db, current_user)
+
+@router.post("/import")
+async def import_airfoil_file_no_slash(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    return await import_airfoil_file(file, current_user)
+
+@router.post("/export")
+async def export_airfoil_no_slash(
+    data: ExportRequest,
+    current_user: User = Depends(get_current_user)
+):
+    return await export_airfoil(data, current_user)
+
+@router.post("/save", status_code=status.HTTP_201_CREATED)
+async def save_airfoil_project_no_slash(
+    data: AirfoilSave,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await save_airfoil_project(data, db, current_user)
+
+@router.delete("/{airfoil_id}")
+async def delete_airfoil_no_slash(
+    airfoil_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await delete_airfoil(airfoil_id, db, current_user)

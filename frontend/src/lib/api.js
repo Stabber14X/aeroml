@@ -8,9 +8,29 @@ function getToken() {
   return localStorage.getItem('token') || '';
 }
 
+// Helper to normalize endpoint URLs to prevent 307 redirects
+function normalizeEndpoint(endpoint) {
+  // Don't add slash if it already has one
+  if (endpoint.endsWith('/')) {
+    return endpoint;
+  }
+  // Don't add slash if it has query parameters
+  if (endpoint.includes('?')) {
+    return endpoint;
+  }
+  // Don't add slash for auth endpoints (they have their own routing)
+  if (endpoint.startsWith('/auth/')) {
+    return endpoint;
+  }
+  // Add trailing slash for all other endpoints
+  return `${endpoint}/`;
+}
+
 export const api = {
   async request(endpoint, options = {}) {
     const token = getToken();
+    const normalizedEndpoint = normalizeEndpoint(endpoint);
+    
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -21,7 +41,7 @@ export const api = {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${normalizedEndpoint}`, {
         ...options,
         headers,
       });
